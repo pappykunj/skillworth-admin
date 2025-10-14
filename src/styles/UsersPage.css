@@ -1,0 +1,22 @@
+.users-page .MuiDataGrid-root {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .users-page .MuiDataGrid-root {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+  
+  .users-page .MuiDataGrid-columnHeaders, .users-page .MuiDataGrid-cell {
+    min-width: 150px; /* Ensure columns have a minimum width */
+  }
+}

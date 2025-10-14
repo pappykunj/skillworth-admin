@@ -1,0 +1,47 @@
+.skills-page {
+  padding: 1rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skills-container {
+  margin-top: 2rem;
+}
+
+.skills-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.color-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-picker-container input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .skills-page .MuiDataGrid-root {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .skills-page .MuiDataGrid-columnHeaders, .skills-page .MuiDataGrid-cell {
+        min-width: 150px;
+    }
+}

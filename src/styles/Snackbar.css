@@ -1,0 +1,105 @@
+/* Base Snackbar style */
+.snackbar {
+  min-width: 320px;
+  background-color: #fff;
+  color: #333;
+  padding: 16px 24px;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  visibility: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.05); /* Softer, layered shadow */
+  border-radius: 12px; /* Softer corners */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 4px solid #8e44ad; /* Default info color (matches login button) */
+}
+
+/* Different states */
+.snackbar.error {
+  background-color: #FFF3F3;
+  color: #E53E3E;
+  border-left-color: #E53E3E;
+}
+
+.snackbar.success {
+  background-color: #F0FFF4;
+  color: #38A169;
+  border-left-color: #38A169;
+}
+
+/* Visibility and animation */
+.snackbar.show {
+  visibility: visible;
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+             fadeOut 0.4s 3.6s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    bottom: 0;
+  }
+}
+
+/* Close button */
+.close-btn {
+  color: inherit; /* Inherits color from the parent state (error, success) */
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 0 0 16px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+/* Loader */
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-right: 16px;
+}
+
+.snackbar.loading .loader {
+    border-top-color: #8e44ad;
+}
+
+.snackbar.success .loader {
+    border-top-color: #38A169;
+}
+
+.snackbar.error .loader {
+    border-top-color: #E53E3E;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

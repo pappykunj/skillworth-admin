@@ -1,0 +1,61 @@
+
+.reels-page {
+  padding: 1rem;
+}
+
+.reels-header {
+  display: flex;
+  flex-direction: column; /* Stack vertically on small screens */
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.add-reel-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Add space on small screens */
+}
+
+.add-reel-btn:hover {
+  background-color: #0056b3;
+}
+
+.reel-thumbnail-datagrid {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.MuiDataGrid-root .MuiDataGrid-cell {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.data-grid-container {
+  width: 100%;
+  overflow-x: auto; /* Allow horizontal scrolling on small screens */
+}
+
+/* Style for the delete button icon */
+.MuiIconButton-colorSecondary {
+  color: #f44336 !important; /* Red color for delete action */
+}
+
+/* Medium screens and up */
+@media (min-width: 768px) {
+  .reels-header {
+    flex-direction: row; /* Align horizontally on larger screens */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .add-reel-btn {
+    margin-top: 0; /* Remove margin on larger screens */
+  }
+}
