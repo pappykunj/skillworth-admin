@@ -44,7 +44,7 @@ const SubSkillsPage = () => {
   useEffect(() => { fetchAllSkillsForDropdown(); }, []);
 
   const handleAddSubSkill = () => {
-    setEditedSubSkill({ subSkillName: '', skillId: '' });
+    setEditedSubSkill({ subSkillName: '', skillId: '', color: '#ffffff' });
     setSubSkillModalOpen(true);
   };
   const handleEditSubSkill = (subSkill) => {
@@ -55,9 +55,9 @@ const SubSkillsPage = () => {
 
   const handleSaveSubSkill = async () => {
     if (!editedSubSkill) return;
-    const url = editedSubSkill.id ? `/admin/update/subSkill/${editedSubSkill.id}` : '/admin/add/subSkill';
+    const url = editedSubSkill.id ? `/subskill/update/${editedSubSkill.id}` : '/subskill/add';
     const method = editedSubSkill.id ? 'put' : 'post';
-    const payload = { subSkillName: editedSubSkill.subSkillName, skillId: editedSubSkill.skillId };
+    const payload = { subSkillName: editedSubSkill.subSkillName, skillId: editedSubSkill.skillId, color: editedSubSkill.color };
     try {
       await apiClient[method](url, payload);
       fetchSubSkills();
@@ -80,6 +80,7 @@ const SubSkillsPage = () => {
   const subSkillsColumns = [
     { field: 'subSkillName', headerName: 'Sub-Skill Name', flex: 1 },
     { field: 'skillId', headerName: 'Parent Skill', flex: 1, valueGetter: (params) => params.row?.skillId?.skillName || 'N/A' },
+    { field: 'color', headerName: 'Color', flex: 1 },
     {
       field: 'actions', headerName: 'Actions', flex: 1, sortable: false,
       renderCell: ({ row }) => (
@@ -124,6 +125,10 @@ const SubSkillsPage = () => {
               ))}
             </Select>
           </FormControl>
+            <div className="color-picker-container">
+                <TextField margin="dense" label="Color" type="text" fullWidth value={editedSubSkill?.color || ''} onChange={(e) => setEditedSubSkill({ ...editedSubSkill, color: e.target.value })} />
+                <input type="color" value={editedSubSkill?.color || '#ffffff'} onChange={(e) => setEditedSubSkill({ ...editedSubSkill, color: e.target.value })} />
+            </div>
         </DialogContent>
         <DialogActions><Button onClick={() => setSubSkillModalOpen(false)}>Cancel</Button><Button onClick={handleSaveSubSkill}>Save</Button></DialogActions>
       </Dialog>

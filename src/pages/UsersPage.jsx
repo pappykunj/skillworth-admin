@@ -17,7 +17,7 @@ const UsersPage = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await apiClient.get(`/admin/get/users?page=${paginationModel.page + 1}&limit=${paginationModel.pageSize}`);
+      const response = await apiClient.get(`/user/all?page=${paginationModel.page + 1}&limit=${paginationModel.pageSize}`);
       setUsers((response.data.users || []).map(u => ({ ...u, id: u._id })));
       setRowCount(response.data.totalUsers || 0);
     } catch (error) {
@@ -34,7 +34,7 @@ const UsersPage = () => {
   const handleDeleteUser = (id) => { setDeleteConfirmation({ open: true, id }); };
 
   const handleSaveUser = async () => {
-    const url = currentUser?.id ? `/admin/update/user/${currentUser.id}` : '/admin/add/user';
+    const url = currentUser?.id ? `/user/update/${currentUser.id}` : '/user/add';
     const method = currentUser?.id ? 'put' : 'post';
     const payload = { ...currentUser, id: undefined };
     try {
@@ -46,7 +46,7 @@ const UsersPage = () => {
 
   const confirmDelete = async () => {
     try {
-      await apiClient.delete(`/admin/delete/user/${deleteConfirmation.id}`);
+      await apiClient.delete(`/user/delete/${deleteConfirmation.id}`);
       fetchUsers();
       setDeleteConfirmation({ open: false, id: null });
     } catch (error) { console.error('Failed to delete user', error); }

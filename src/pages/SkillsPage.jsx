@@ -34,7 +34,7 @@ const SkillsPage = () => {
   const handleDeleteSkill = (id) => { setDeleteConfirmation({ open: true, type: 'skill', id }); };
 
   const handleSaveSkill = async () => {
-    const url = currentSkill?.id ? `/admin/update/skill/${currentSkill.id}` : '/admin/add/skill';
+    const url = currentSkill?.id ? `/skill/update/${currentSkill.id}` : '/skill/add';
     const method = currentSkill?.id ? 'put' : 'post';
     try {
       await apiClient[method](url, { skillName: currentSkill.skillName, color: currentSkill.color });
@@ -60,7 +60,7 @@ const SkillsPage = () => {
     {
       field: 'actions', headerName: 'Actions', flex: 1, sortable: false,
       renderCell: ({ row }) => (
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center' }} >
           <IconButton onClick={() => handleEditSkill(row)}><FaEdit /></IconButton>
           <IconButton onClick={() => handleDeleteSkill(row.id)}><FaTrash /></IconButton>
         </div>
