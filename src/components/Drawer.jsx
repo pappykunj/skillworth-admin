@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaHome, FaUsers, FaVideo, FaCog, FaSignOutAlt, FaTimes, FaLightbulb } from 'react-icons/fa';
+import apiClient from '../api';
 import '../styles/Drawer.css';
 
 // Mapping of nav item names to icons
@@ -13,9 +14,16 @@ const navIcons = {
 };
 
 const Drawer = ({ navItems, open, onClose }) => {
-  const handleLogout = () => {
-    // Your logout logic here
-    console.log('Logging out...');
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/logout');
+      localStorage.removeItem('token');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
