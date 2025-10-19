@@ -19,21 +19,17 @@ const AddReelPage = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const navigate = useNavigate();
 
-  const fetchSkills = useCallback(async () => {
+  const fetchSkillsAndSubSkills = useCallback(async () => {
     try {
-      const response = await apiClient.get('/admin/get/skills');
-      setSkills(response.data.skills || []);
+      const response = await apiClient.get('http://skillsworth-be-11s8.onrender.com/skills-and-subskills', {
+        headers: {
+          'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWRiNmUwNmFlMjFkYWQ0M2NkYTU2MCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc2MDg3NDEzMH0.ENOaWVoS6MECzLIg_USyt5MxN16B1O5UiTf2n9pIprM'
+        }
+      });
+      setSkills(response.data.data.skills || []);
+      setAllSubSkills(response.data.data.subSkills || []);
     } catch (error) {
-      console.error("Failed to fetch skills:", error);
-    }
-  }, []);
-
-  const fetchSubSkills = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/admin/get/subskills');
-      setAllSubSkills(response.data.subSkills || []);
-    } catch (error) {
-      console.error("Failed to fetch sub-skills:", error);
+      console.error("Failed to fetch skills and sub-skills:", error);
     }
   }, []);
 
@@ -47,10 +43,9 @@ const AddReelPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchSkills();
-    fetchSubSkills();
+    fetchSkillsAndSubSkills();
     fetchUsers();
-  }, [fetchSkills, fetchSubSkills, fetchUsers]);
+  }, [fetchSkillsAndSubSkills, fetchUsers]);
 
   useEffect(() => {
     if (selectedSkills.length > 0) {
