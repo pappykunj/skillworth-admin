@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Avatar, Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import apiClient from '../api';
 import '../styles/UsersPage.css';
@@ -53,8 +53,16 @@ const UsersPage = () => {
   };
 
   const columns = [
+    {
+        field: 'profile_img',
+        headerName: 'Avatar',
+        renderCell: (params) => <Avatar src={params.value} />,
+        sortable: false,
+        width: 80,
+      },
     { field: 'fullName', headerName: 'Name', flex: 1 },
     { field: 'email', headerName: 'Email', flex: 1 },
+    { field: 'phone', headerName: 'Phone', flex: 1 },
     {
       field: 'actions', headerName: 'Actions', flex: 1, sortable: false,
       renderCell: ({ row }) => (
@@ -82,6 +90,7 @@ const UsersPage = () => {
         <DialogContent>
           <TextField autoFocus margin="dense" label="Name" type="text" fullWidth value={currentUser?.fullName || ''} onChange={(e) => setCurrentUser({ ...currentUser, fullName: e.target.value })} />
           <TextField margin="dense" label="Email" type="email" fullWidth value={currentUser?.email || ''} onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })} />
+          <TextField margin="dense" label="Phone" type="text" fullWidth value={currentUser?.phone || ''} onChange={(e) => setCurrentUser({ ...currentUser, phone: e.target.value })} />
           {!currentUser?.id && <TextField margin="dense" label="Password" type="password" fullWidth onChange={(e) => setCurrentUser({ ...currentUser, password: e.target.value })} />}
         </DialogContent>
         <DialogActions><Button onClick={() => setModalOpen(false)}>Cancel</Button><Button onClick={handleSaveUser}>Save</Button></DialogActions>
