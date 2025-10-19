@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaHome, FaUsers, FaVideo, FaCog, FaSignOutAlt, FaTimes, FaLightbulb } from 'react-icons/fa';
+import { FaHome, FaUsers, FaVideo, FaCog, FaSignOutAlt, FaLightbulb } from 'react-icons/fa';
 import apiClient from '../api';
 import '../styles/Drawer.css';
 
@@ -13,12 +13,12 @@ const navIcons = {
   'Sub-Skills': <FaLightbulb />
 };
 
-const Drawer = ({ navItems, open, onClose }) => {
+const Drawer = ({ navItems }) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await apiClient.post('/admin/logout');
+      await apiClient.post('/logout');
       localStorage.removeItem('token');
       navigate('/login');
     } catch (error) {
@@ -27,13 +27,9 @@ const Drawer = ({ navItems, open, onClose }) => {
   };
 
   return (
-    <div className={`drawer ${open ? 'open' : ''}`}>
+    <div className="drawer">
       <div className="drawer-header">
         <h2>Admin</h2>
-        <button onClick={onClose} className="drawer-close-button
-">
-          <FaTimes />
-        </button>
       </div>
       <div className="drawer-content">
         <nav>

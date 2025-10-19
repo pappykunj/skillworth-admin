@@ -17,7 +17,7 @@ const UsersPage = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await apiClient.get(`/user/all?page=${paginationModel.page + 1}&limit=${paginationModel.pageSize}`);
+      const response = await apiClient.get(`/admin/users?page=${paginationModel.page + 1}&limit=${paginationModel.pageSize}`);
       setUsers((response.data.users || []).map(u => ({ ...u, id: u._id })));
       setRowCount(response.data.totalUsers || 0);
     } catch (error) {

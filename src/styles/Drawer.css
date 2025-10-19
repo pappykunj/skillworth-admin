@@ -7,8 +7,6 @@
   flex-direction: column;
   position: fixed;
   height: 100%;
-  transform: translateX(0);
-  transition: transform 0.3s ease-in-out;
   z-index: 1000;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -26,15 +24,6 @@
   margin: 0;
   font-size: 1.8rem;
   font-weight: 700;
-}
-
-/* Close button styling */
-.drawer-close-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.8rem;
-  cursor: pointer;
 }
 
 /* Navigation list */
@@ -92,13 +81,9 @@ nav a.active {
   background-color: #8e44ad;
 }
 
-/* Responsive adjustments */
+/* Hide drawer on mobile */
 @media (max-width: 768px) {
   .drawer {
-    transform: translateX(-100%); /* Hidden by default on mobile */
-  }
-
-  .drawer.open {
-    transform: translateX(0); /* Shown when open */
+    display: none;
   }
 }
