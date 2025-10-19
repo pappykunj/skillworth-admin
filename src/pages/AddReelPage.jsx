@@ -10,7 +10,8 @@ const AddReelPage = () => {
   const [video, setVideo] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [skills, setSkills] = useState([]);
-  const [subSkills, setSubSkills] = useState([]);
+  const [allSubSkills, setAllSubSkills] = useState([]);
+  const [filteredSubSkills, setFilteredSubSkills] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -30,7 +31,7 @@ const AddReelPage = () => {
   const fetchSubSkills = useCallback(async () => {
     try {
       const response = await apiClient.get('/admin/get/subskills');
-      setSubSkills(response.data.subSkills || []);
+      setAllSubSkills(response.data.subSkills || []);
     } catch (error) {
       console.error("Failed to fetch sub-skills:", error);
     }
@@ -51,6 +52,16 @@ const AddReelPage = () => {
     fetchUsers();
   }, [fetchSkills, fetchSubSkills, fetchUsers]);
 
+  useEffect(() => {
+    if (selectedSkills.length > 0) {
+      const filtered = allSubSkills.filter(subSkill => selectedSkills.includes(subSkill.skillId));
+      setFilteredSubSkills(filtered);
+    } else {
+      setFilteredSubSkills([]);
+    }
+    setSelectedSubSkills([]); // Reset sub-skills when skills change
+  }, [selectedSkills, allSubSkills]);
+
   const handleVideoFileChange = (event) => {
     setVideo(event.target.files[0]);
   };
@@ -66,14 +77,19 @@ const AddReelPage = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('reelvideo', video);
-    formData.append('skillId', selectedSkills[0]);
-    formData.append('subSkillsId', selectedSubSkills[0]);
+    selectedSkills.forEach(skillId => {
+        formData.append('skillId', skillId);
+    });
+    selectedSubSkills.forEach(subSkillId => {
+        formData.append('subSkillsId', subSkillId);
+    });
     formData.append('thumbnail', thumbnail);
 
     try {
       await apiClient.post('http://skillsworth-be-11s8.onrender.com/admin/upload/reel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWRiNmUwNmFlMjFkYWQ0M2NkYTU2MCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc2MDQ0NjQ0Nn0.Okynsip6zFoSsvVeC8mbjwlxeW1C4N7FflINQ8RsowM'
         },
       });
       setSnackbar({ open: true, message: 'Reel added successfully!', severity: 'success' });
@@ -129,12 +145,17 @@ const AddReelPage = () => {
         <FormControl fullWidth>
           <InputLabel>Skills</InputLabel>
           <Select
+            multiple
             value={selectedSkills}
-            onChange={(e) => setSelectedSkills([e.target.value])}
-            renderValue={(selected) => {
-                const skill = skills.find(s => s._id === selected[0]);
-                return <Chip key={selected[0]} label={skill ? skill.skillName : ''} />;
-            }}
+            onChange={(e) => setSelectedSkills(e.target.value)}
+            renderValue={(selected) => (
+              <div className="chips-container">
+                {selected.map((value) => {
+                    const skill = skills.find(s => s._id === value);
+                    return <Chip key={value} label={skill ? skill.skillName : ''} />;
+                })}
+              </div>
+            )}
           >
             {skills.map((skill) => (
               <MenuItem key={skill._id} value={skill._id}>
@@ -146,14 +167,20 @@ const AddReelPage = () => {
         <FormControl fullWidth>
           <InputLabel>Sub-Skills</InputLabel>
           <Select
+            multiple
             value={selectedSubSkills}
-            onChange={(e) => setSelectedSubSkills([e.target.value])}
-            renderValue={(selected) => {
-                const subSkill = subSkills.find(s => s._id === selected[0]);
-                return <Chip key={selected[0]} label={subSkill ? subSkill.subSkillName : ''} />;
-            }}
+            onChange={(e) => setSelectedSubSkills(e.target.value)}
+            renderValue={(selected) => (
+                <div className="chips-container">
+                  {selected.map((value) => {
+                      const subSkill = allSubSkills.find(s => s._id === value);
+                      return <Chip key={value} label={subSkill ? subSkill.subSkillName : ''} />;
+                  })}
+                </div>
+              )}
+            disabled={selectedSkills.length === 0}
           >
-            {subSkills.map((subSkill) => (
+            {filteredSubSkills.map((subSkill) => (
               <MenuItem key={subSkill._id} value={subSkill._id}>
                 {subSkill.subSkillName}
               </MenuItem>
