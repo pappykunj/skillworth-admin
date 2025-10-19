@@ -28,8 +28,8 @@ const AddUserPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addUser(formData);
-      setSnackbar({ open: true, message: 'User added successfully!', severity: 'success' });
+      const response = await addUser(formData);
+      setSnackbar({ open: true, message: response.message || 'User added successfully!', severity: 'success' });
       setTimeout(() => navigate('/dashboard/users'), 2000);
     } catch (error) {
       setSnackbar({ open: true, message: error.response?.data?.message || 'Failed to add user.', severity: 'error' });
