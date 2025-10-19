@@ -9,3 +9,12 @@
   max-width: 600px;
   margin: 0 auto;
 }
+
+.phone-input-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.country-code-field {
+  width: 100px;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, TextField, Snackbar, Alert } from '@mui/material';
+import { Button, TextField, Snackbar, Alert, Box } from '@mui/material';
 import { addUser } from '../api/admin';
 import '../styles/AddUserPage.css';
 
@@ -8,6 +8,7 @@ const AddUserPage = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    countryCode: '',
     phone: '',
     password: '',
     role: 'User',
@@ -28,7 +29,8 @@ const AddUserPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await addUser(formData);
+      const phone = `${formData.countryCode} ${formData.phone}`.trim();
+      const response = await addUser({ ...formData, phone });
       setSnackbar({ open: true, message: response.message || 'User added successfully!', severity: 'success' });
       setTimeout(() => navigate('/dashboard/users'), 2000);
     } catch (error) {
@@ -66,14 +68,24 @@ const AddUserPage = () => {
           onChange={handleChange}
           required
         />
-        <TextField
-          name="phone"
-          label="Phone"
-          variant="outlined"
-          fullWidth
-          value={formData.phone}
-          onChange={handleChange}
-        />
+        <Box className="phone-input-container">
+          <TextField
+            name="countryCode"
+            label="Code"
+            variant="outlined"
+            className="country-code-field"
+            value={formData.countryCode}
+            onChange={handleChange}
+          />
+          <TextField
+            name="phone"
+            label="Phone Number"
+            variant="outlined"
+            fullWidth
+            value={formData.phone}
+            onChange={handleChange}
+          />
+        </Box>
         <TextField
           name="password"
           label="Password"
