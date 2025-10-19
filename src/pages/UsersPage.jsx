@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Avatar, Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
@@ -13,6 +14,7 @@ const UsersPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState({ open: false, id: null });
   const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -29,7 +31,7 @@ const UsersPage = () => {
 
   useEffect(() => { fetchUsers(); }, [fetchUsers]);
 
-  const handleAddUser = () => { setCurrentUser(null); setModalOpen(true); };
+  const handleAddUser = () => navigate('/dashboard/users/add');
   const handleEditUser = (user) => { setCurrentUser(user); setModalOpen(true); };
   const handleDeleteUser = (id) => { setDeleteConfirmation({ open: true, id }); };
 

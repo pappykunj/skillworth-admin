@@ -21,7 +21,7 @@ const AddReelPage = () => {
 
   const fetchSkillsAndSubSkills = useCallback(async () => {
     try {
-      const response = await apiClient.get('http://skillsworth-be-11s8.onrender.com/skills-and-subskills', {
+      const response = await apiClient.get('/skills-and-subskills', {
         headers: {
           'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWRiNmUwNmFlMjFkYWQ0M2NkYTU2MCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc2MDg3NDEzMH0.ENOaWVoS6MECzLIg_USyt5MxN16B1O5UiTf2n9pIprM'
         }
@@ -35,7 +35,7 @@ const AddReelPage = () => {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const response = await apiClient.get('/admin/get/users');
+      const response = await apiClient.get('/admin/users');
       setUsers(response.data.users || []);
     } catch (error) {
       console.error("Failed to fetch users:", error);
