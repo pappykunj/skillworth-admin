@@ -8,8 +8,11 @@ const AddReelPage = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [video, setVideo] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [skills, setSkills] = useState([]);
   const [subSkills, setSubSkills] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState('');
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [selectedSubSkills, setSelectedSubSkills] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -33,26 +36,42 @@ const AddReelPage = () => {
     }
   }, []);
 
+  const fetchUsers = useCallback(async () => {
+    try {
+      const response = await apiClient.get('/admin/get/users');
+      setUsers(response.data.users || []);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchSkills();
     fetchSubSkills();
-  }, [fetchSkills, fetchSubSkills]);
+    fetchUsers();
+  }, [fetchSkills, fetchSubSkills, fetchUsers]);
 
-  const handleFileChange = (event) => {
+  const handleVideoFileChange = (event) => {
     setVideo(event.target.files[0]);
+  };
+
+  const handleThumbnailFileChange = (event) => {
+    setThumbnail(event.target.files[0]);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
+    formData.append('user', selectedUser);
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('video', video);
-    formData.append('skillId', JSON.stringify(selectedSkills));
-    formData.append('subSkillsId', JSON.stringify(selectedSubSkills));
+    formData.append('reelvideo', video);
+    formData.append('skillId', selectedSkills[0]);
+    formData.append('subSkillsId', selectedSubSkills[0]);
+    formData.append('thumbnail', thumbnail);
 
     try {
-      await apiClient.post('/admin/upload/reel', formData, {
+      await apiClient.post('http://skillsworth-be-11s8.onrender.com/admin/upload/reel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -76,6 +95,20 @@ const AddReelPage = () => {
     <div className="add-reel-page">
       <h1>Add New Reel</h1>
       <form onSubmit={handleSubmit} className="add-reel-form">
+        <FormControl fullWidth>
+          <InputLabel>User</InputLabel>
+          <Select
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            required
+          >
+            {users.map((user) => (
+              <MenuItem key={user._id} value={user._id}>
+                {user.fullName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           label="Title"
           variant="outlined"
@@ -96,17 +129,12 @@ const AddReelPage = () => {
         <FormControl fullWidth>
           <InputLabel>Skills</InputLabel>
           <Select
-            multiple
             value={selectedSkills}
-            onChange={(e) => setSelectedSkills(e.target.value)}
-            renderValue={(selected) => (
-              <div className="chips-container">
-                {selected.map((value) => {
-                    const skill = skills.find(s => s._id === value);
-                    return <Chip key={value} label={skill ? skill.skillName : ''} />;
-                })}
-              </div>
-            )}
+            onChange={(e) => setSelectedSkills([e.target.value])}
+            renderValue={(selected) => {
+                const skill = skills.find(s => s._id === selected[0]);
+                return <Chip key={selected[0]} label={skill ? skill.skillName : ''} />;
+            }}
           >
             {skills.map((skill) => (
               <MenuItem key={skill._id} value={skill._id}>
@@ -118,17 +146,12 @@ const AddReelPage = () => {
         <FormControl fullWidth>
           <InputLabel>Sub-Skills</InputLabel>
           <Select
-            multiple
             value={selectedSubSkills}
-            onChange={(e) => setSelectedSubSkills(e.target.value)}
-            renderValue={(selected) => (
-                <div className="chips-container">
-                  {selected.map((value) => {
-                      const subSkill = subSkills.find(s => s._id === value);
-                      return <Chip key={value} label={subSkill ? subSkill.subSkillName : ''} />;
-                  })}
-                </div>
-              )}
+            onChange={(e) => setSelectedSubSkills([e.target.value])}
+            renderValue={(selected) => {
+                const subSkill = subSkills.find(s => s._id === selected[0]);
+                return <Chip key={selected[0]} label={subSkill ? subSkill.subSkillName : ''} />;
+            }}
           >
             {subSkills.map((subSkill) => (
               <MenuItem key={subSkill._id} value={subSkill._id}>
@@ -146,12 +169,27 @@ const AddReelPage = () => {
           <input
             type="file"
             hidden
-            onChange={handleFileChange}
+            onChange={handleVideoFileChange}
             accept="video/*"
             required
           />
         </Button>
-        {video && <p>Selected file: {video.name}</p>}
+        {video && <p>Selected video: {video.name}</p>}
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+        >
+          Upload Thumbnail
+          <input
+            type="file"
+            hidden
+            onChange={handleThumbnailFileChange}
+            accept="image/*"
+            required
+          />
+        </Button>
+        {thumbnail && <p>Selected thumbnail: {thumbnail.name}</p>}
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Add Reel
         </Button>
