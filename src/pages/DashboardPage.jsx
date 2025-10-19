@@ -5,6 +5,7 @@ import HomePage from './HomePage';
 import UsersPage from './UsersPage';
 import ReelsPage from './ReelsPage';
 import AddReelPage from './AddReelPage'; // Import the new component
+import EditReelPage from './EditReelPage';
 import AddUserPage from './AddUserPage'; // Import the new component
 import SkillsPage from './SkillsPage';
 import SubSkillsPage from './SubSkillsPage';
@@ -28,7 +29,8 @@ const DashboardPage = () => {
           <Route path="users" element={<UsersPage />} />
           <Route path="users/add" element={<AddUserPage />} />
           <Route path="reels" element={<ReelsPage />} />
-          <Route path="reels/add" element={<AddReelPage />} /> {/* Add the new route */}
+          <Route path="reels/add" element={<AddReelPage />} />
+          <Route path="reels/edit/:id" element={<EditReelPage />} />
           <Route path="skills" element={<SkillsPage />} />
           <Route path="sub-skills" element={<SubSkillsPage />} />
           <Route path="*" element={<Navigate to="/dashboard/home" />} />

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Snackbar, Alert } from '@mui/material';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 import apiClient from '../api';
 import '../styles/ReelsPage.css';
 
@@ -132,12 +132,17 @@ const ReelsPage = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: 150,
       sortable: false,
       renderCell: (params) => (
-        <IconButton onClick={() => handleClickOpen(params.id)} color="secondary">
-          <FaTrash />
-        </IconButton>
+        <>
+          <IconButton component={Link} to={`/dashboard/reels/edit/${params.id}`} color="primary">
+            <FaEdit />
+          </IconButton>
+          <IconButton onClick={() => handleClickOpen(params.id)} color="secondary">
+            <FaTrash />
+          </IconButton>
+        </>
       ),
     },
   ];
