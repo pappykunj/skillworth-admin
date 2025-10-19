@@ -1,69 +1,17 @@
-
 .add-reel-page {
   padding: 2rem;
+}
+
+.add-reel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   max-width: 600px;
-  margin: 2rem auto;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin: 0 auto;
 }
 
-.add-reel-form .form-group {
-  margin-bottom: 1.5rem;
-}
-
-.add-reel-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.add-reel-form input[type="text"],
-.add-reel-form textarea,
-.add-reel-form select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.add-reel-form input[type="file"] {
-    padding: 0.5rem;
-}
-
-.add-reel-form textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-  background-color: #0056b3;
-}
-
-.submit-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #d9534f;
-  background-color: #f2dede;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  border: 1px solid #ebccd1;
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }

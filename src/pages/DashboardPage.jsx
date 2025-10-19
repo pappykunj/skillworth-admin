@@ -1,38 +1,36 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Drawer from '../components/Drawer';
-import SkillsPage from './SkillsPage';
-import SubSkillsPage from './SubSkillsPage';
+import HomePage from './HomePage';
 import UsersPage from './UsersPage';
 import ReelsPage from './ReelsPage';
-import HomePage from './HomePage';
+import AddReelPage from './AddReelPage'; // Import the new component
+import SkillsPage from './SkillsPage';
+import SubSkillsPage from './SubSkillsPage';
 import '../styles/DashboardPage.css';
 
 const DashboardPage = () => {
-  // List of navigation items for the drawer
   const navItems = [
-    { path: '/dashboard/home', name: 'Home', component: HomePage },
-    { path: '/dashboard/users', name: 'Users', component: UsersPage },
-    { path: '/dashboard/reels', name: 'Reels', component: ReelsPage },
-    { path: '/dashboard/skills', name: 'Skills', component: SkillsPage },
-    { path: '/dashboard/sub-skills', name: 'Sub-Skills', component: SubSkillsPage },
+    { name: 'Home', path: '/dashboard/home' },
+    { name: 'Users', path: '/dashboard/users' },
+    { name: 'Reels', path: '/dashboard/reels' },
+    { name: 'Skills', path: '/dashboard/skills' },
+    { name: 'Sub-Skills', path: '/dashboard/sub-skills' },
   ];
 
   return (
     <div className="dashboard-layout">
       <Drawer navItems={navItems} />
-      <main className="main-content">
-        <div className="dashboard-header">
-          <h1>Dashboard</h1>
-        </div>
-        <div className="content-container">
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
-            {navItems.map(item => (
-              <Route key={item.path} path={item.path.replace('/dashboard', '')} element={<item.component />} />
-            ))}
-          </Routes>
-        </div>
+      <main className="dashboard-content">
+        <Routes>
+          <Route path="home" element={<HomePage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="reels" element={<ReelsPage />} />
+          <Route path="reels/add" element={<AddReelPage />} /> {/* Add the new route */}
+          <Route path="skills" element={<SkillsPage />} />
+          <Route path="sub-skills" element={<SubSkillsPage />} />
+          <Route path="*" element={<Navigate to="/dashboard/home" />} />
+        </Routes>
       </main>
     </div>
   );

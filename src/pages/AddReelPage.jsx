@@ -1,177 +1,166 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, TextField, Select, MenuItem, InputLabel, FormControl, Chip, Snackbar, Alert } from '@mui/material';
 import apiClient from '../api';
 import '../styles/AddReelPage.css';
-import { useNavigate } from 'react-router-dom';
 
 const AddReelPage = () => {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    user: '',
-    skillId: '',
-    subSkillsId: '',
-  });
-  const [reelVideo, setReelVideo] = useState(null);
-  const [thumbnail, setThumbnail] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [video, setVideo] = useState(null);
   const [skills, setSkills] = useState([]);
   const [subSkills, setSubSkills] = useState([]);
-  const [filteredSubSkills, setFilteredSubSkills] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectedSubSkills, setSelectedSubSkills] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch users
-    apiClient.get('/admin/users?limit=1000')
-      .then(response => {
-        setUsers(response.data.users);
-      })
-      .catch(err => console.error("Failed to fetch users:", err));
-
-    // Fetch skills and sub-skills
-    apiClient.get('/skills-and-subskills')
-        .then(response => {
-            setSkills(response.data.data.skills);
-            setSubSkills(response.data.data.subSkills);
-        })
-        .catch(err => console.error("Failed to fetch skills and sub-skills:", err));
+  const fetchSkills = useCallback(async () => {
+    try {
+      const response = await apiClient.get('/admin/get/skills');
+      setSkills(response.data.skills || []);
+    } catch (error) {
+      console.error("Failed to fetch skills:", error);
+    }
   }, []);
 
-  const handleSkillChange = (e) => {
-    const selectedSkillId = e.target.value;
-    setFormData((prev) => ({ ...prev, skillId: selectedSkillId, subSkillsId: '' }));
-    const relatedSubSkills = subSkills.filter(sub => sub.skillId === selectedSkillId);
-    setFilteredSubSkills(relatedSubSkills);
+  const fetchSubSkills = useCallback(async () => {
+    try {
+      const response = await apiClient.get('/admin/get/subskills');
+      setSubSkills(response.data.subSkills || []);
+    } catch (error) {
+      console.error("Failed to fetch sub-skills:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSkills();
+    fetchSubSkills();
+  }, [fetchSkills, fetchSubSkills]);
+
+  const handleFileChange = (event) => {
+    setVideo(event.target.files[0]);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    if (name === 'reelvideo') {
-      setReelVideo(files[0]);
-    } else if (name === 'thumbnail') {
-      setThumbnail(files[0]);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    const data = new FormData();
-    data.append('title', formData.title);
-    data.append('description', formData.description);
-    data.append('user', formData.user);
-    data.append('skillId', formData.skillId);
-    data.append('subSkillsId', formData.subSkillsId);
-    if (reelVideo) {
-        data.append('reelvideo', reelVideo);
-    }
-    if (thumbnail) {
-        data.append('thumbnail', thumbnail);
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('video', video);
+    formData.append('skillId', JSON.stringify(selectedSkills));
+    formData.append('subSkillsId', JSON.stringify(selectedSubSkills));
 
     try {
-      await apiClient.post('/admin/upload/reel', data, {
+      await apiClient.post('/admin/add/reel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      navigate('/reels');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to upload reel.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+      setSnackbar({ open: true, message: 'Reel added successfully!', severity: 'success' });
+      setTimeout(() => navigate('/dashboard/reels'), 2000);
+    } catch (error) {
+      console.error("Failed to add reel:", error);
+      setSnackbar({ open: true, message: error.response?.data?.message || 'Failed to add reel.', severity: 'error' });
     }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
   };
 
   return (
     <div className="add-reel-page">
       <h1>Add New Reel</h1>
-      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit} className="add-reel-form">
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="user">User</label>
-          <select id="user" name="user" value={formData.user} onChange={handleChange} required>
-            <option value="">Select a user</option>
-            {users.map(user => (
-              <option key={user._id} value={user._id}>{user.fullName}</option>
+        <TextField
+          label="Title"
+          variant="outlined"
+          fullWidth
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <TextField
+          label="Description"
+          variant="outlined"
+          fullWidth
+          multiline
+          rows={4}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <FormControl fullWidth>
+          <InputLabel>Skills</InputLabel>
+          <Select
+            multiple
+            value={selectedSkills}
+            onChange={(e) => setSelectedSkills(e.target.value)}
+            renderValue={(selected) => (
+              <div className="chips-container">
+                {selected.map((value) => {
+                    const skill = skills.find(s => s._id === value);
+                    return <Chip key={value} label={skill ? skill.skillName : ''} />;
+                })}
+              </div>
+            )}
+          >
+            {skills.map((skill) => (
+              <MenuItem key={skill._id} value={skill._id}>
+                {skill.skillName}
+              </MenuItem>
             ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="skillId">Skill</label>
-          <select id="skillId" name="skillId" value={formData.skillId} onChange={handleSkillChange} required>
-            <option value="">Select a skill</option>
-            {skills.map(skill => (
-              <option key={skill._id} value={skill._id}>{skill.skillName}</option>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel>Sub-Skills</InputLabel>
+          <Select
+            multiple
+            value={selectedSubSkills}
+            onChange={(e) => setSelectedSubSkills(e.target.value)}
+            renderValue={(selected) => (
+                <div className="chips-container">
+                  {selected.map((value) => {
+                      const subSkill = subSkills.find(s => s._id === value);
+                      return <Chip key={value} label={subSkill ? subSkill.subSkillName : ''} />;
+                  })}
+                </div>
+              )}
+          >
+            {subSkills.map((subSkill) => (
+              <MenuItem key={subSkill._id} value={subSkill._id}>
+                {subSkill.subSkillName}
+              </MenuItem>
             ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="subSkillsId">Sub-Skill</label>
-           <select id="subSkillsId" name="subSkillsId" value={formData.subSkillsId} onChange={handleChange} required disabled={!formData.skillId}>
-            <option value="">Select a sub-skill</option>
-            {filteredSubSkills.map(subSkill => (
-              <option key={subSkill._id} value={subSkill._id}>{subSkill.subSkillName}</option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reelvideo">Reel Video</label>
+          </Select>
+        </FormControl>
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+        >
+          Upload Video
           <input
             type="file"
-            id="reelvideo"
-            name="reelvideo"
+            hidden
+            onChange={handleFileChange}
             accept="video/*"
-            onChange={handleFileChange}
             required
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="thumbnail">Thumbnail</label>
-          <input
-            type="file"
-            id="thumbnail"
-            name="thumbnail"
-            accept="image/*"
-            onChange={handleFileChange}
-            required
-          />
-        </div>
-        <button type="submit" className="submit-btn" disabled={isLoading}>
-          {isLoading ? 'Uploading...' : 'Upload Reel'}
-        </button>
+        </Button>
+        {video && <p>Selected file: {video.name}</p>}
+        <Button type="submit" variant="contained" color="primary" fullWidth>
+          Add Reel
+        </Button>
       </form>
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
