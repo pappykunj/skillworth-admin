@@ -36,11 +36,14 @@ const UsersPage = () => {
   const handleDeleteUser = (id) => { setDeleteConfirmation({ open: true, id }); };
 
   const handleSaveUser = async () => {
-    const url = currentUser?.id ? `/user/update/${currentUser.id}` : '/user/add';
-    const method = currentUser?.id ? 'put' : 'post';
-    const payload = { ...currentUser, id: undefined };
+    if (!currentUser?.id) return;
+    const payload = { 
+        fullName: currentUser.fullName, 
+        email: currentUser.email, 
+        phone: currentUser.phone 
+    };
     try {
-      await apiClient[method](url, payload);
+      await apiClient.put(`/admin/users/${currentUser.id}`, payload);
       fetchUsers();
       setModalOpen(false);
     } catch (error) { console.error('Failed to save user', error); }
@@ -48,7 +51,7 @@ const UsersPage = () => {
 
   const confirmDelete = async () => {
     try {
-      await apiClient.delete(`/user/delete/${deleteConfirmation.id}`);
+      await apiClient.delete(`/admin/users/${deleteConfirmation.id}`);
       fetchUsers();
       setDeleteConfirmation({ open: false, id: null });
     } catch (error) { console.error('Failed to delete user', error); }
@@ -88,12 +91,11 @@ const UsersPage = () => {
       <div style={{ height: 600, width: '100%' }}><DataGrid rows={users} columns={columns} loading={loading} rowCount={rowCount} pageSizeOptions={[10, 20, 50]} paginationModel={paginationModel} onPaginationModelChange={setPaginationModel} paginationMode="server" /></div>
 
       <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-        <DialogTitle>{currentUser?.id ? 'Edit User' : 'Add User'}</DialogTitle>
+        <DialogTitle>Edit User</DialogTitle>
         <DialogContent>
           <TextField autoFocus margin="dense" label="Name" type="text" fullWidth value={currentUser?.fullName || ''} onChange={(e) => setCurrentUser({ ...currentUser, fullName: e.target.value })} />
           <TextField margin="dense" label="Email" type="email" fullWidth value={currentUser?.email || ''} onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })} />
           <TextField margin="dense" label="Phone" type="text" fullWidth value={currentUser?.phone || ''} onChange={(e) => setCurrentUser({ ...currentUser, phone: e.target.value })} />
-          {!currentUser?.id && <TextField margin="dense" label="Password" type="password" fullWidth onChange={(e) => setCurrentUser({ ...currentUser, password: e.target.value })} />}
         </DialogContent>
         <DialogActions><Button onClick={() => setModalOpen(false)}>Cancel</Button><Button onClick={handleSaveUser}>Save</Button></DialogActions>
       </Dialog>
