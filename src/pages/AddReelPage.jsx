@@ -21,11 +21,7 @@ const AddReelPage = () => {
 
   const fetchSkillsAndSubSkills = useCallback(async () => {
     try {
-      const response = await apiClient.get('/skills-and-subskills', {
-        headers: {
-          'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWRiNmUwNmFlMjFkYWQ0M2NkYTU2MCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc2MDg3NDEzMH0.ENOaWVoS6MECzLIg_USyt5MxN16B1O5UiTf2n9pIprM'
-        }
-      });
+      const response = await apiClient.get('/skills-and-subskills');
       setSkills(response.data.data.skills || []);
       setAllSubSkills(response.data.data.subSkills || []);
     } catch (error) {
@@ -81,10 +77,9 @@ const AddReelPage = () => {
     formData.append('thumbnail', thumbnail);
 
     try {
-      await apiClient.post('http://skillsworth-be-11s8.onrender.com/admin/upload/reel', formData, {
+      await apiClient.post('/admin/upload/reel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWRiNmUwNmFlMjFkYWQ0M2NkYTU2MCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc2MDQ0NjQ0Nn0.Okynsip6zFoSsvVeC8mbjwlxeW1C4N7FflINQ8RsowM'
         },
       });
       setSnackbar({ open: true, message: 'Reel added successfully!', severity: 'success' });
