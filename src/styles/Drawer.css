@@ -1,84 +1,88 @@
+/* Drawer container styling */
 .drawer {
   width: 250px;
-  background-color: #3a005a; /* Deeper purple for a stronger feel */
+  background-color: #3a005a; /* Deep purple */
   color: white;
   display: flex;
   flex-direction: column;
   position: fixed;
   height: 100%;
-  transition: transform 0.3s ease;
   transform: translateX(0);
-  z-index: 1000; /* Ensure drawer is on top */
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.drawer.open {
-  transform: translateX(0);
-}
-
-.drawer:not(.open) {
-  transform: translateX(-100%);
-}
-
+/* Header inside the drawer */
 .drawer-header {
-  padding: 1.2rem;
+  padding: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #4a148c;
+  border-bottom: 1px solid #4a148c; /* Slightly lighter purple */
 }
 
 .drawer-header h2 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 700;
 }
 
+/* Close button styling */
 .drawer-close-button {
   background: none;
   border: none;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
 }
 
+/* Navigation list */
 nav ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/* Navigation links */
 nav a {
   display: flex;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 1.8rem;
   color: white;
   text-decoration: none;
   transition: background-color 0.3s, padding-left 0.3s;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  border-left: 4px solid transparent;
 }
 
 nav a:hover {
   background-color: #4a148c;
-  padding-left: 1.8rem;
+  border-left: 4px solid #8e44ad; /* Highlight on hover */
+  padding-left: 2.2rem;
 }
 
 nav a.active {
-  background-color: #8e44ad;
+  background-color: #8e44ad; /* Active link color */
   font-weight: 700;
+  border-left: 4px solid #ffffff;
 }
 
+/* Logout button container */
 .logout-button-container {
-  margin-top: auto;
-  padding: 1rem;
+  margin-top: auto; /* Pushes to the bottom */
+  padding: 1.5rem;
 }
 
+/* Logout button styling */
 .logout-button {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 1rem;
+  padding: 1.2rem;
   background-color: #4a148c;
   border: none;
+  border-radius: 8px;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -88,15 +92,13 @@ nav a.active {
   background-color: #8e44ad;
 }
 
-/* Responsive Drawer */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .drawer {
-    width: 250px; /* Fixed width on mobile */
-    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
-    transform: translateX(-100%);
+    transform: translateX(-100%); /* Hidden by default on mobile */
   }
 
   .drawer.open {
-    transform: translateX(0);
+    transform: translateX(0); /* Shown when open */
   }
 }

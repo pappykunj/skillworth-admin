@@ -18,7 +18,7 @@ const Drawer = ({ navItems, open, onClose }) => {
 
   const handleLogout = async () => {
     try {
-      await apiClient.post('/logout');
+      await apiClient.post('/admin/logout');
       localStorage.removeItem('token');
       navigate('/login');
     } catch (error) {

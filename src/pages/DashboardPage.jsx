@@ -10,7 +10,7 @@ import { FaBars } from 'react-icons/fa';
 import '../styles/DashboardPage.css';
 
 const DashboardPage = () => {
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(window.innerWidth > 768);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -27,6 +27,9 @@ const DashboardPage = () => {
 
   return (
     <div className="dashboard-layout">
+      {drawerOpen && window.innerWidth < 768 && (
+        <div className="backdrop" onClick={toggleDrawer}></div>
+      )}
       <Drawer navItems={navItems} open={drawerOpen} onClose={toggleDrawer} />
       <main className={`main-content ${drawerOpen ? 'drawer-open' : ''}`}>
         <div className="dashboard-header">
@@ -35,12 +38,14 @@ const DashboardPage = () => {
           </button>
           <h1>Dashboard</h1>
         </div>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
-          {navItems.map(item => (
-            <Route key={item.path} path={item.path.replace('/dashboard', '')} element={<item.component />} />
-          ))}
-        </Routes>
+        <div className="content-container">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
+            {navItems.map(item => (
+              <Route key={item.path} path={item.path.replace('/dashboard', '')} element={<item.component />} />
+            ))}
+          </Routes>
+        </div>
       </main>
     </div>
   );
