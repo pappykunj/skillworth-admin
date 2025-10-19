@@ -32,16 +32,15 @@ const UsersPage = () => {
   useEffect(() => { fetchUsers(); }, [fetchUsers]);
 
   const handleAddUser = () => navigate('/dashboard/users/add');
-  const handleEditUser = (user) => { setCurrentUser(user); setModalOpen(true); };
+  const handleEditUser = (user) => { setCurrentUser({ ...user, password: '' }); setModalOpen(true); };
   const handleDeleteUser = (id) => { setDeleteConfirmation({ open: true, id }); };
 
   const handleSaveUser = async () => {
     if (!currentUser?.id) return;
-    const payload = { 
-        fullName: currentUser.fullName, 
-        email: currentUser.email, 
-        phone: currentUser.phone 
-    };
+    const payload = { ...currentUser };
+    if (!payload.password) {
+      delete payload.password;
+    }
     try {
       await apiClient.put(`/admin/users/${currentUser.id}`, payload);
       fetchUsers();
@@ -96,6 +95,7 @@ const UsersPage = () => {
           <TextField autoFocus margin="dense" label="Name" type="text" fullWidth value={currentUser?.fullName || ''} onChange={(e) => setCurrentUser({ ...currentUser, fullName: e.target.value })} />
           <TextField margin="dense" label="Email" type="email" fullWidth value={currentUser?.email || ''} onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })} />
           <TextField margin="dense" label="Phone" type="text" fullWidth value={currentUser?.phone || ''} onChange={(e) => setCurrentUser({ ...currentUser, phone: e.target.value })} />
+          <TextField margin="dense" label="Password" type="password" fullWidth value={currentUser?.password || ''} onChange={(e) => setCurrentUser({ ...currentUser, password: e.target.value })} placeholder="Leave blank to keep current password" />
         </DialogContent>
         <DialogActions><Button onClick={() => setModalOpen(false)}>Cancel</Button><Button onClick={handleSaveUser}>Save</Button></DialogActions>
       </Dialog>
