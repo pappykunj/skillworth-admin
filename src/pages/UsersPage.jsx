@@ -19,7 +19,7 @@ const UsersPage = () => {
     try {
       const response = await apiClient.get(`/admin/users?page=${paginationModel.page + 1}&limit=${paginationModel.pageSize}`);
       setUsers((response.data.users || []).map(u => ({ ...u, id: u._id })));
-      setRowCount(response.data.totalUsers || 0);
+      setRowCount(response.data.pagination.totalUsers || 0);
     } catch (error) {
       console.error("Failed to fetch users:", error);
       setUsers([]);
@@ -53,7 +53,7 @@ const UsersPage = () => {
   };
 
   const columns = [
-    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'fullName', headerName: 'Name', flex: 1 },
     { field: 'email', headerName: 'Email', flex: 1 },
     {
       field: 'actions', headerName: 'Actions', flex: 1, sortable: false,
@@ -80,7 +80,7 @@ const UsersPage = () => {
       <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
         <DialogTitle>{currentUser?.id ? 'Edit User' : 'Add User'}</DialogTitle>
         <DialogContent>
-          <TextField autoFocus margin="dense" label="Name" type="text" fullWidth value={currentUser?.name || ''} onChange={(e) => setCurrentUser({ ...currentUser, name: e.target.value })} />
+          <TextField autoFocus margin="dense" label="Name" type="text" fullWidth value={currentUser?.fullName || ''} onChange={(e) => setCurrentUser({ ...currentUser, fullName: e.target.value })} />
           <TextField margin="dense" label="Email" type="email" fullWidth value={currentUser?.email || ''} onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })} />
           {!currentUser?.id && <TextField margin="dense" label="Password" type="password" fullWidth onChange={(e) => setCurrentUser({ ...currentUser, password: e.target.value })} />}
         </DialogContent>
