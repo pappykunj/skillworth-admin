@@ -146,7 +146,7 @@ const ReelsPage = () => {
     <div className="reels-page">
       <div className="reels-header">
         <h1>Reels</h1>
-        <Link to="/reels/add" className="add-reel-btn">
+        <Link to="/dashboard/reels/add" className="add-reel-btn">
           Add Reel
         </Link>
       </div>

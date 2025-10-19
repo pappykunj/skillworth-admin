@@ -52,7 +52,7 @@ const AddReelPage = () => {
     formData.append('subSkillsId', JSON.stringify(selectedSubSkills));
 
     try {
-      await apiClient.post('/admin/add/reel', formData, {
+      await apiClient.post('/admin/upload/reel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
